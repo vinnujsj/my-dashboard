@@ -1,0 +1,528 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Montserrat:wght@300;400;500;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--gold:#ffd700;--gl:#fff0a0;--gd:#b8860b;--gdp:#8b6914;--black:#070500;--black2:#100d00;--black3:#1a1500;--white:#f5f0e8;--wd:rgba(245,240,232,.7);--wf:rgba(245,240,232,.12);}
+.db-root{background:var(--black);color:var(--white);font-family:'Montserrat',sans-serif;min-height:800px;position:relative;overflow:hidden;}
+canvas#stardash{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+.db-inner{position:relative;z-index:1;}
+
+nav.db-nav{display:flex;justify-content:space-between;align-items:center;padding:16px 28px;background:rgba(7,5,0,.97);border-bottom:1px solid rgba(255,215,0,.12);}
+.nav-logo{font-family:'Cinzel',serif;font-size:18px;font-weight:900;background:linear-gradient(135deg,var(--gl),var(--gold),var(--gd));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:4px;}
+.nav-sub{font-size:9px;letter-spacing:3px;color:var(--gd);text-transform:uppercase;margin-top:2px;}
+.nav-links{display:flex;gap:4px;}
+.nav-btn{font-size:9px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--wd);background:transparent;border:none;padding:7px 13px;cursor:pointer;transition:color .3s;position:relative;font-family:'Montserrat',sans-serif;}
+.nav-btn::after{content:'';position:absolute;bottom:3px;left:13px;width:0;height:1px;background:var(--gold);transition:width .3s;}
+.nav-btn:hover,.nav-btn.active{color:var(--gold);}
+.nav-btn.active::after,.nav-btn:hover::after{width:calc(100% - 26px);}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.visit-badge{font-size:9px;letter-spacing:2px;color:var(--gd);border:1px solid rgba(255,215,0,.2);padding:5px 11px;text-transform:uppercase;}
+.rating-badge{font-size:9px;letter-spacing:1px;color:var(--gold);border:1px solid rgba(255,215,0,.3);padding:5px 11px;text-transform:uppercase;display:flex;align-items:center;gap:5px;}
+
+.content{padding:24px 28px;}
+.sec{display:none;}
+.sec.active{display:block;}
+.slabel{font-size:9px;font-weight:600;letter-spacing:6px;text-transform:uppercase;color:var(--gd);margin-bottom:8px;}
+.stitle{font-family:'Cinzel',serif;font-size:22px;font-weight:700;background:linear-gradient(135deg,var(--gl),var(--gold),var(--gd));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;}
+.sline{width:60px;height:1px;background:var(--gold);margin-bottom:24px;opacity:.6;}
+.divider{width:100%;height:1px;background:linear-gradient(to right,transparent,rgba(255,215,0,.12),transparent);margin:24px 0;}
+
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.stat{border:1px solid rgba(255,215,0,.12);padding:18px;background:rgba(255,215,0,.02);transition:all .3s;text-align:center;}
+.stat:hover{border-color:rgba(255,215,0,.4);background:rgba(255,215,0,.05);transform:translateY(-3px);}
+.stat-n{font-family:'Cinzel',serif;font-size:24px;font-weight:700;color:var(--gold);}
+.stat-l{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--wd);margin-top:5px;}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
+.card{border:1px solid rgba(255,215,0,.12);padding:22px;background:rgba(255,215,0,.02);transition:all .3s;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;width:3px;height:0;background:linear-gradient(to bottom,var(--gold),var(--gd));transition:height .4s;}
+.card:hover::before{height:100%;}
+.card:hover{border-color:rgba(255,215,0,.3);background:rgba(255,215,0,.04);}
+.card-title{font-family:'Cinzel',serif;font-size:13px;font-weight:600;color:var(--gl);margin-bottom:14px;letter-spacing:1px;display:flex;align-items:center;gap:8px;}
+.card-title span{color:var(--gd);font-size:11px;}
+
+.skill-row{margin-bottom:11px;}
+.skill-top{display:flex;justify-content:space-between;font-size:11px;color:var(--wd);margin-bottom:5px;}
+.skill-pct{color:var(--gold);font-family:'Cinzel',serif;}
+.bar-bg{background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.08);height:5px;}
+.bar-fill{height:5px;background:linear-gradient(90deg,var(--gd),var(--gold));transition:width 1.2s ease;}
+
+.cert-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,215,0,.06);}
+.cert-item:last-child{border-bottom:none;}
+.cert-dot{width:6px;height:6px;background:var(--gold);margin-top:4px;flex-shrink:0;}
+.cert-name{font-size:11px;color:var(--gl);font-weight:500;}
+.cert-org{font-size:10px;color:var(--gd);margin-top:2px;letter-spacing:1px;}
+
+.tag{font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border:1px solid rgba(255,215,0,.2);color:var(--gd);background:rgba(255,215,0,.03);}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
+.svc-card{border:1px solid rgba(255,215,0,.12);padding:18px;background:rgba(255,215,0,.02);transition:all .3s;position:relative;overflow:hidden;}
+.svc-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:0;background:linear-gradient(to bottom,var(--gold),var(--gd));transition:height .4s;}
+.svc-card:hover::before{height:100%;}
+.svc-card:hover{border-color:rgba(255,215,0,.35);background:rgba(255,215,0,.05);transform:translateX(4px);}
+.svc-num{font-family:'Cinzel',serif;font-size:28px;font-weight:900;color:rgba(255,215,0,.07);line-height:1;margin-bottom:-4px;}
+.svc-name{font-family:'Cinzel',serif;font-size:12px;font-weight:600;color:var(--gl);margin-bottom:7px;letter-spacing:1px;}
+.svc-desc{font-size:11px;color:var(--wd);line-height:1.8;}
+
+.proj-card{border:1px solid rgba(255,215,0,.12);background:rgba(255,215,0,.02);transition:all .3s;margin-bottom:14px;overflow:hidden;}
+.proj-card:hover{border-color:rgba(255,215,0,.35);background:rgba(255,215,0,.05);transform:translateY(-3px);}
+.proj-top-pad{padding:20px 22px 0;}
+.proj-num{font-family:'Cinzel',serif;font-size:36px;font-weight:900;color:rgba(255,215,0,.07);line-height:1;margin-bottom:-4px;}
+.proj-tag-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gd);margin-bottom:7px;}
+.proj-title{font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:var(--gl);margin-bottom:8px;line-height:1.3;}
+.proj-desc{font-size:11px;color:var(--wd);line-height:1.9;margin-bottom:12px;}
+.proj-bottom{padding:12px 22px;border-top:1px solid rgba(255,215,0,.08);display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
+
+.exp-tl{position:relative;padding-left:28px;}
+.exp-tl::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,var(--gold),transparent);}
+.exp-item{position:relative;margin-bottom:16px;padding:20px;border:1px solid rgba(255,215,0,.12);background:rgba(255,215,0,.02);transition:all .3s;}
+.exp-item::before{content:'';position:absolute;left:-34px;top:24px;width:8px;height:8px;border-radius:50%;background:var(--gold);}
+.exp-item:hover{border-color:rgba(255,215,0,.3);background:rgba(255,215,0,.04);}
+.exp-date{font-size:9px;letter-spacing:3px;color:var(--gd);text-transform:uppercase;margin-bottom:5px;}
+.exp-role{font-family:'Cinzel',serif;font-size:15px;font-weight:600;color:var(--gl);margin-bottom:2px;}
+.exp-co{font-size:11px;color:var(--gd);margin-bottom:10px;letter-spacing:1px;}
+.exp-li{font-size:11px;color:var(--wd);line-height:1.9;padding:4px 0 4px 14px;border-bottom:1px solid rgba(255,215,0,.04);position:relative;}
+.exp-li::before{content:'\25B8';position:absolute;left:0;color:var(--gd);}
+
+.contact-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+.con-card{border:1px solid rgba(255,215,0,.12);padding:16px 18px;background:rgba(255,215,0,.02);transition:all .3s;display:flex;align-items:center;gap:14px;text-decoration:none;}
+.con-card:hover{border-color:rgba(255,215,0,.4);background:rgba(255,215,0,.05);}
+.con-ico{font-family:'Cinzel',serif;font-size:13px;color:var(--gold);width:36px;height:36px;border:1px solid rgba(255,215,0,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.con-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gd);}
+.con-val{font-size:11px;color:var(--wd);margin-top:2px;}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.form-group{margin-bottom:12px;}
+.form-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gd);margin-bottom:6px;display:block;}
+.form-input{width:100%;background:rgba(255,215,0,.03);border:1px solid rgba(255,215,0,.15);color:var(--white);padding:10px 14px;font-size:12px;font-family:'Montserrat',sans-serif;outline:none;transition:border-color .3s;}
+.form-input:focus{border-color:rgba(255,215,0,.5);}
+.form-input::placeholder{color:rgba(245,240,232,.3);}
+select.form-input option{background:#100d00;color:var(--white);}
+.btn-g{font-size:9px;font-weight:600;letter-spacing:3px;text-transform:uppercase;padding:12px 26px;background:linear-gradient(135deg,var(--gd),var(--gold),var(--gd));color:var(--black);border:none;cursor:pointer;font-family:'Montserrat',sans-serif;transition:all .3s;}
+.btn-g:hover{transform:translateY(-2px);}
+.btn-o{font-size:9px;font-weight:600;letter-spacing:3px;text-transform:uppercase;padding:12px 26px;background:transparent;color:var(--gold);border:1px solid rgba(255,215,0,.4);cursor:pointer;font-family:'Montserrat',sans-serif;transition:all .3s;margin-left:10px;}
+.btn-o:hover{background:rgba(255,215,0,.07);}
+.msg-success{display:none;background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.3);padding:14px 18px;font-size:11px;color:var(--gl);letter-spacing:1px;margin-top:14px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;}
+.inbox-item{border:1px solid rgba(255,215,0,.1);padding:14px 16px;margin-bottom:10px;background:rgba(255,215,0,.02);transition:all .3s;}
+.inbox-item:hover{border-color:rgba(255,215,0,.3);}
+.inbox-from{font-family:'Cinzel',serif;font-size:12px;color:var(--gl);margin-bottom:3px;}
+.inbox-sub{font-size:10px;color:var(--gold);letter-spacing:1px;margin-bottom:4px;}
+.inbox-preview{font-size:10px;color:var(--wd);}
+.inbox-time{font-size:9px;color:var(--gd);letter-spacing:1px;float:right;margin-top:-30px;}
+.empty-inbox{text-align:center;padding:30px;font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gd);font-size:15px;}
+
+.star-widget{text-align:center;padding:24px;border:1px solid rgba(255,215,0,.12);background:rgba(255,215,0,.02);margin-bottom:20px;}
+.star-title{font-family:'Cinzel',serif;font-size:14px;color:var(--gl);margin-bottom:6px;letter-spacing:2px;}
+.star-sub{font-size:10px;color:var(--wd);margin-bottom:16px;letter-spacing:1px;}
+.stars-row{display:flex;justify-content:center;gap:8px;margin-bottom:14px;}
+.star-btn{font-size:28px;cursor:pointer;color:rgba(255,215,0,.2);transition:color .2s;background:none;border:none;line-height:1;font-family:serif;}
+.star-btn.lit{color:var(--gold);}
+.avg-display{font-family:'Cinzel',serif;font-size:36px;color:var(--gold);margin-bottom:4px;}
+.avg-sub{font-size:9px;letter-spacing:3px;color:var(--gd);text-transform:uppercase;}
+.rating-submitted{display:none;font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gl);font-size:15px;padding:10px;}
+
+.chart-wrap{position:relative;width:100%;height:220px;}
+</style>
+
+<div class="db-root">
+<canvas id="stardash"></canvas>
+<div class="db-inner">
+
+<nav class="db-nav">
+  <div>
+    <div class="nav-logo">THEEGALA VINIL</div>
+    <div class="nav-sub">Data Analyst &middot; Software Engineer &middot; Hyderabad</div>
+  </div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="show('overview',this)">Overview</button>
+    <button class="nav-btn" onclick="show('skills',this)">Skills</button>
+    <button class="nav-btn" onclick="show('services',this)">Services</button>
+    <button class="nav-btn" onclick="show('projects',this)">Projects</button>
+    <button class="nav-btn" onclick="show('experience',this)">Experience</button>
+    <button class="nav-btn" onclick="show('rating',this)">Rating</button>
+    <button class="nav-btn" onclick="show('messages',this)">Messages</button>
+    <button class="nav-btn" onclick="show('contact',this)">Contact</button>
+  </div>
+  <div class="nav-right">
+    <div class="visit-badge" id="visit-count">Views: 1</div>
+    <div class="rating-badge" id="nav-rating">&#9733; 5.0</div>
+  </div>
+</nav>
+
+<div class="content">
+
+<!-- OVERVIEW -->
+<div class="sec active" id="sec-overview">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+    <div>
+      <p class="slabel">01 &middot; Profile</p>
+      <h2 class="stitle">Theegala Vinil</h2>
+      <div class="sline"></div>
+      <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--wd);margin-bottom:14px;letter-spacing:2px;">Software Engineer &amp; Data Analyst</p>
+      <p style="font-size:12px;color:var(--wd);line-height:2;margin-bottom:16px;">Open to full-time roles, freelance projects, and collaborations in data analytics, software engineering, and cloud solutions. Building the future one dataset at a time.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <div style="font-size:10px;letter-spacing:2px;color:var(--gd);border:1px solid rgba(255,215,0,.2);padding:5px 12px;text-transform:uppercase;">Hyderabad, India</div>
+        <div style="font-size:10px;letter-spacing:2px;color:var(--gold);border:1px solid rgba(255,215,0,.35);padding:5px 12px;text-transform:uppercase;">Open to Work</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-content:start;">
+      <div class="stat"><div class="stat-n">3+</div><div class="stat-l">Years Experience</div></div>
+      <div class="stat"><div class="stat-n">8+</div><div class="stat-l">Projects Done</div></div>
+      <div class="stat"><div class="stat-n">6</div><div class="stat-l">Certifications</div></div>
+      <div class="stat" id="stat-rating"><div class="stat-n" id="ov-rating">5.0</div><div class="stat-l">Avg Rating</div></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Certifications <span>/ credentials</span></div>
+      <div class="cert-item"><div class="cert-dot"></div><div><div class="cert-name">Data Science Certification</div><div class="cert-org">ExcelR Pvt. Limited &middot; 2025</div></div></div>
+      <div class="cert-item"><div class="cert-dot"></div><div><div class="cert-name">Power BI &amp; ChatGPT</div><div class="cert-org">ExcelR Pvt. Limited &middot; 2025</div></div></div>
+      <div class="cert-item"><div class="cert-dot"></div><div><div class="cert-name">Data Analytics &amp; Visualization</div><div class="cert-org">Deloitte via Forage &middot; 2025-2026</div></div></div>
+      <div class="cert-item"><div class="cert-dot"></div><div><div class="cert-name">AWS Cloud Architecture</div><div class="cert-org">Amazon Web Services via Forage &middot; 2025</div></div></div>
+      <div class="cert-item"><div class="cert-dot"></div><div><div class="cert-name">Data Labeling Analyst Simulation</div><div class="cert-org">Forage Academy &middot; Jan 2026</div></div></div>
+      <div class="cert-item"><div class="cert-dot"></div><div><div class="cert-name">Python Programming</div><div class="cert-org">Udemy &middot; 2025</div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Tech Stack <span>/ tools &amp; technologies</span></div>
+      <div class="tags">
+        <span class="tag">Python</span><span class="tag">SQL</span><span class="tag">Power BI</span><span class="tag">Tableau</span><span class="tag">Excel</span><span class="tag">Pandas</span><span class="tag">NumPy</span><span class="tag">Scikit-learn</span><span class="tag">Matplotlib</span><span class="tag">Seaborn</span><span class="tag">AWS</span><span class="tag">Git</span><span class="tag">MySQL</span><span class="tag">PostgreSQL</span><span class="tag">ETL</span><span class="tag">EDA</span><span class="tag">ML Models</span><span class="tag">Jupyter</span><span class="tag">ASP.NET</span><span class="tag">DAX</span>
+      </div>
+      <div class="divider" style="margin:14px 0;"></div>
+      <div class="card-title" style="margin-bottom:8px;">Languages <span>/ spoken</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <span class="tag">Telugu (Native)</span><span class="tag">English (Professional)</span><span class="tag">Hindi (Conversational)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SKILLS -->
+<div class="sec" id="sec-skills">
+  <p class="slabel">02 &middot; Expertise</p>
+  <h2 class="stitle">Skills &amp; Proficiency</h2>
+  <div class="sline"></div>
+  <div class="two-col" style="margin-bottom:20px;">
+    <div class="card">
+      <div class="card-title">Technical Skills <span>/ proficiency</span></div>
+      <div class="skill-row"><div class="skill-top"><span>Python (Pandas, NumPy, Scikit-learn)</span><span class="skill-pct">88%</span></div><div class="bar-bg"><div class="bar-fill" style="width:0%" data-w="88%"></div></div></div>
+      <div class="skill-row"><div class="skill-top"><span>SQL (MySQL, PostgreSQL)</span><span class="skill-pct">85%</span></div><div class="bar-bg"><div class="bar-fill" style="width:0%" data-w="85%"></div></div></div>
+      <div class="skill-row"><div class="skill-top"><span>Power BI &amp; DAX</span><span class="skill-pct">82%</span></div><div class="bar-bg"><div class="bar-fill" style="width:0%" data-w="82%"></div></div></div>
+      <div class="skill-row"><div class="skill-top"><span>Machine Learning</span><span class="skill-pct">78%</span></div><div class="bar-bg"><div class="bar-fill" style="width:0%" data-w="78%"></div></div></div>
+      <div class="skill-row"><div class="skill-top"><span>Excel &amp; ETL Pipelines</span><span class="skill-pct">85%</span></div><div class="bar-bg"><div class="bar-fill" style="width:0%" data-w="85%"></div></div></div>
+      <div class="skill-row"><div class="skill-top"><span>Tableau</span><span class="skill-pct">75%</span></div><div class="bar-bg"><div class="bar-fill" style="width:0%" data-w="75%"></div></div></div>
+      <div class="skill-row"><div class="skill-top"><span>AWS &amp; Cloud</span><span class="skill-pct">65%</span></div><div class="bar-bg"><div class="bar-fill" style="width:0%" data-w="65%"></div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Skill Radar <span>/ chart</span></div>
+      <div class="chart-wrap"><canvas id="radarChart" role="img" aria-label="Radar chart showing Vinnu skill levels across Python, SQL, Power BI, ML, Tableau, Excel, AWS">Skill levels: Python 88, SQL 85, Power BI 82, ML 78, Tableau 75, Excel 85, AWS 65.</canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Skill Comparison <span>/ bar chart</span></div>
+    <div class="chart-wrap" style="height:200px;"><canvas id="barChart" role="img" aria-label="Bar chart of skill proficiency percentages">Skill proficiency: Python 88%, SQL 85%, Power BI 82%, ML 78%, Tableau 75%, Excel 85%, AWS 65%.</canvas></div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<div class="sec" id="sec-services">
+  <p class="slabel">03 &middot; What I Offer</p>
+  <h2 class="stitle">Freelance Services</h2>
+  <div class="sline"></div>
+  <div class="svc-grid">
+    <div class="svc-card"><div class="svc-num">01</div><div class="svc-name">Data Analysis</div><div class="svc-desc">End-to-end data analysis: cleaning, EDA, insights, and business recommendations using Python and SQL.</div><div class="tags"><span class="tag">Python</span><span class="tag">SQL</span><span class="tag">EDA</span></div></div>
+    <div class="svc-card"><div class="svc-num">02</div><div class="svc-name">Power BI Dashboards</div><div class="svc-desc">Interactive dashboards with DAX measures, drill-throughs, slicers, KPIs, and scheduled refresh setup.</div><div class="tags"><span class="tag">Power BI</span><span class="tag">DAX</span></div></div>
+    <div class="svc-card"><div class="svc-num">03</div><div class="svc-name">Tableau Visualizations</div><div class="svc-desc">Stunning Tableau dashboards with LOD expressions, calculated fields, and storytelling layouts.</div><div class="tags"><span class="tag">Tableau</span><span class="tag">Viz</span></div></div>
+    <div class="svc-card"><div class="svc-num">04</div><div class="svc-name">SQL Development</div><div class="svc-desc">Complex queries, stored procedures, views, window functions, and database optimization for reporting.</div><div class="tags"><span class="tag">MySQL</span><span class="tag">PostgreSQL</span></div></div>
+    <div class="svc-card"><div class="svc-num">05</div><div class="svc-name">ML Model Development</div><div class="svc-desc">Classification, regression, and clustering models with full evaluation metrics and business-ready outputs.</div><div class="tags"><span class="tag">Scikit-learn</span><span class="tag">Python</span></div></div>
+    <div class="svc-card"><div class="svc-num">06</div><div class="svc-name">Excel &amp; Reporting</div><div class="svc-desc">Advanced Excel reports, pivot tables, audit-ready outputs, and automated reporting pipelines.</div><div class="tags"><span class="tag">Excel</span><span class="tag">ETL</span></div></div>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<div class="sec" id="sec-projects">
+  <p class="slabel">04 &middot; Work</p>
+  <h2 class="stitle">Key Projects</h2>
+  <div class="sline"></div>
+  <div class="proj-card"><div class="proj-top-pad"><div class="proj-num">01</div><div class="proj-tag-lbl">Data Analytics &middot; Featured</div><div class="proj-title">Gender Pay Gap Analysis &amp; Audit Dashboard</div><div class="proj-desc">Built an end-to-end ETL pipeline: ingested raw HR data, applied multi-level cleaning and transformation, risk-tier classification (Severe/Moderate/Fair/Reverse), and delivered audit-ready Excel report with interactive Power BI dashboard for stakeholders.</div><div class="tags"><span class="tag">Python</span><span class="tag">Pandas</span><span class="tag">Power BI</span><span class="tag">Excel</span><span class="tag">ETL</span></div></div><div class="proj-bottom"><span class="tag" style="color:var(--gold);border-color:rgba(255,215,0,.4);">View Project</span></div></div>
+  <div class="proj-card"><div class="proj-top-pad"><div class="proj-num">02</div><div class="proj-tag-lbl">Machine Learning</div><div class="proj-title">Machine Learning Model Development Suite</div><div class="proj-desc">Developed and evaluated ML models across classification, regression, clustering, and time-series tasks. Covered full pipeline from EDA and feature engineering through model evaluation and business insight communication.</div><div class="tags"><span class="tag">Scikit-learn</span><span class="tag">Pandas</span><span class="tag">NumPy</span><span class="tag">Classification</span><span class="tag">Clustering</span></div></div><div class="proj-bottom"><span class="tag" style="color:var(--gold);border-color:rgba(255,215,0,.4);">View Project</span></div></div>
+  <div class="proj-card"><div class="proj-top-pad"><div class="proj-num">03</div><div class="proj-tag-lbl">Web Development</div><div class="proj-title">Secure Cloud Transactions Web App</div><div class="proj-desc">Built a .NET web application focused on balancing performance, accuracy, and precision for secure cloud transactions using ASP.NET Core MVC, SQL Server, Bootstrap 5 with full documentation.</div><div class="tags"><span class="tag">ASP.NET Core</span><span class="tag">SQL Server</span><span class="tag">Bootstrap 5</span><span class="tag">MVC</span></div></div><div class="proj-bottom"><span class="tag" style="color:var(--gold);border-color:rgba(255,215,0,.4);">View Project</span></div></div>
+</div>
+
+<!-- EXPERIENCE -->
+<div class="sec" id="sec-experience">
+  <p class="slabel">05 &middot; Journey</p>
+  <h2 class="stitle">Experience &amp; Education</h2>
+  <div class="sline"></div>
+  <div class="exp-tl">
+    <div class="exp-item"><div class="exp-date">2025 &middot; Present</div><div class="exp-role">Software Engineer &amp; Data Analyst</div><div class="exp-co">Dolphin Softech &middot; Hyderabad</div><div class="exp-li">Data analysis, reporting, and dashboard development for business operations</div><div class="exp-li">SQL query development and ETL pipeline support</div><div class="exp-li">HR documentation, onboarding, and compliance reporting</div></div>
+    <div class="exp-item"><div class="exp-date">2025 &middot; 2026</div><div class="exp-role">Data Analytics &amp; Visualization Intern</div><div class="exp-co">Deloitte via Forage</div><div class="exp-li">Built end-to-end data pipeline for HR compensation analytics</div><div class="exp-li">Designed risk-tier classification logic for gender pay gap analysis</div><div class="exp-li">Produced audit-ready dashboards for non-technical stakeholders</div></div>
+    <div class="exp-item"><div class="exp-date">Aug 2025 &middot; Nov 2025</div><div class="exp-role">Data Science Intern</div><div class="exp-co">AI Variant</div><div class="exp-li">Full data preparation and cleansing on real-time datasets</div><div class="exp-li">Implemented supervised and unsupervised ML models end-to-end</div><div class="exp-li">Analytical reports bridging technical outputs with business decisions</div></div>
+    <div class="exp-item"><div class="exp-date">2023 &middot; 2026</div><div class="exp-role">Bachelor of Computer Applications</div><div class="exp-co">Masterji Degree &amp; PG College &middot; Kakatiya University</div><div class="exp-li">Coursework: Data Structures, Algorithms, DBMS, Python Programming</div></div>
+  </div>
+</div>
+
+<!-- RATING -->
+<div class="sec" id="sec-rating">
+  <p class="slabel">06 &middot; Feedback</p>
+  <h2 class="stitle">Rate My Profile</h2>
+  <div class="sline"></div>
+  <div class="star-widget">
+    <div class="star-title">How would you rate this profile?</div>
+    <div class="star-sub">Your feedback helps improve the portfolio</div>
+    <div class="stars-row" id="stars-row">
+      <button class="star-btn" data-v="1" onclick="hoverStar(1)">&#9733;</button>
+      <button class="star-btn" data-v="2" onclick="hoverStar(2)">&#9733;</button>
+      <button class="star-btn" data-v="3" onclick="hoverStar(3)">&#9733;</button>
+      <button class="star-btn" data-v="4" onclick="hoverStar(4)">&#9733;</button>
+      <button class="star-btn" data-v="5" onclick="hoverStar(5)">&#9733;</button>
+    </div>
+    <div id="pre-submit">
+      <textarea id="rating-comment" class="form-input" rows="2" placeholder="Leave a comment (optional)..." style="margin-bottom:10px;"></textarea>
+      <button class="btn-g" onclick="submitRating()">Submit Rating</button>
+    </div>
+    <div class="rating-submitted" id="rating-thanks">Thank you for your rating &mdash; it has been recorded.</div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Overall Rating <span>/ live average</span></div>
+      <div style="text-align:center;padding:16px 0;">
+        <div class="avg-display" id="avg-num">5.0</div>
+        <div class="avg-sub" id="avg-count">Based on 1 rating</div>
+        <div style="display:flex;justify-content:center;gap:4px;margin-top:10px;" id="avg-stars-display"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Rating Distribution <span>/ breakdown</span></div>
+      <div class="chart-wrap" style="height:180px;"><canvas id="ratingChart" role="img" aria-label="Bar chart showing rating distribution from 1 to 5 stars">Rating distribution chart.</canvas></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px;">
+    <div class="card-title">Recent Comments <span>/ visitor feedback</span></div>
+    <div id="comments-list"><div style="font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gd);font-size:14px;text-align:center;padding:16px;">No comments yet. Be the first to leave feedback.</div></div>
+  </div>
+</div>
+
+<!-- MESSAGES -->
+<div class="sec" id="sec-messages">
+  <p class="slabel">07 &middot; Inbox</p>
+  <h2 class="stitle">Visitor Messages</h2>
+  <div class="sline"></div>
+  <div class="card" style="margin-bottom:18px;">
+    <div class="card-title">Inbox <span>/ messages sent to you</span></div>
+    <div id="inbox-list"><div class="empty-inbox">No messages yet. Share your dashboard to receive enquiries.</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Message Stats <span>/ overview</span></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:4px;">
+      <div class="stat"><div class="stat-n" id="msg-total">0</div><div class="stat-l">Total Messages</div></div>
+      <div class="stat"><div class="stat-n" id="msg-today">0</div><div class="stat-l">Today</div></div>
+      <div class="stat"><div class="stat-n" id="msg-services">-</div><div class="stat-l">Top Service</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="sec" id="sec-contact">
+  <p class="slabel">08 &middot; Connect</p>
+  <h2 class="stitle">Get In Touch</h2>
+  <div class="sline"></div>
+  <div class="contact-grid">
+    <a href="mailto:theegalarinku154@gmail.com" class="con-card"><div class="con-ico">@</div><div><div class="con-label">Email</div><div class="con-val">theegalarinku154@gmail.com</div></div></a>
+    <a href="tel:+918374512463" class="con-card"><div class="con-ico">Tel</div><div><div class="con-label">Phone</div><div class="con-val">+91 83745 12463</div></div></a>
+    <a href="https://www.linkedin.com/in/theegala-vinil-2048432a1/" target="_blank" class="con-card"><div class="con-ico">in</div><div><div class="con-label">LinkedIn</div><div class="con-val">theegala-vinil-2048432a1</div></div></a>
+    <a href="https://github.com/vinnujsj" target="_blank" class="con-card"><div class="con-ico">Git</div><div><div class="con-label">GitHub</div><div class="con-val">github.com/vinnujsj</div></div></a>
+    <a href="https://www.instagram.com/vineeth_vinnu_lbw" target="_blank" class="con-card"><div class="con-ico">Ig</div><div><div class="con-label">Instagram</div><div class="con-val">@vineeth_vinnu_lbw</div></div></a>
+    <div class="con-card"><div class="con-ico" style="font-size:9px;letter-spacing:1px;">HYD</div><div><div class="con-label">Location</div><div class="con-val">Hyderabad, Telangana, India</div></div></div>
+  </div>
+  <div class="divider"></div>
+  <div class="card">
+    <div class="card-title">Send Me a Message <span>/ enquiry form</span></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Your Name</label><input type="text" id="f-name" class="form-input" placeholder="Full name"></div>
+      <div class="form-group"><label class="form-label">Your Email</label><input type="email" id="f-email" class="form-input" placeholder="email@example.com"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Service Needed</label>
+      <select id="f-service" class="form-input">
+        <option value="">Select a service...</option>
+        <option>Data Analysis</option>
+        <option>Power BI Dashboard</option>
+        <option>Tableau Visualization</option>
+        <option>SQL Development</option>
+        <option>ML Model Development</option>
+        <option>Excel Reporting</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Message</label><textarea id="f-msg" class="form-input" rows="4" placeholder="Tell me about your project..."></textarea></div>
+    <button class="btn-g" onclick="sendMessage()">Send Message</button>
+    <button class="btn-o" onclick="sendPrompt('Write a professional project inquiry message to a Data Analyst for a business dashboard project')">Get Help Writing ↗</button>
+    <div class="msg-success" id="msg-success">&#9654; Your message has been recorded. Vinil will get back to you at theegalarinku154@gmail.com</div>
+  </div>
+</div>
+
+</div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+var DB={msgs:[],ratings:[],totalViews:1,selectedStar:0};
+
+try{var s=localStorage.getItem('vdb');if(s)DB=JSON.parse(s);}catch(e){}
+function save(){try{localStorage.setItem('vdb',JSON.stringify(DB));}catch(e){}}
+
+function show(id,btn){
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('sec-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(id==='skills')setTimeout(animBars,100);
+  if(id==='rating'){buildRatingChart();buildComments();}
+  if(id==='messages'){buildInbox();}
+}
+
+function animBars(){
+  document.querySelectorAll('.bar-fill').forEach(function(b){b.style.width=b.getAttribute('data-w');});
+}
+
+function updateStats(){
+  document.getElementById('visit-count').textContent='Views: '+DB.totalViews;
+  var avg=DB.ratings.length?DB.ratings.reduce(function(a,b){return a+b.v;},0)/DB.ratings.length:5;
+  avg=Math.round(avg*10)/10;
+  document.getElementById('nav-rating').innerHTML='&#9733; '+avg.toFixed(1);
+  document.getElementById('avg-num').textContent=avg.toFixed(1);
+  document.getElementById('avg-count').textContent='Based on '+(DB.ratings.length||1)+' rating'+(DB.ratings.length!==1?'s':'');
+  document.getElementById('ov-rating').textContent=avg.toFixed(1);
+  var sd=document.getElementById('avg-stars-display');
+  sd.innerHTML='';
+  for(var i=1;i<=5;i++){var sp=document.createElement('span');sp.style.cssText='font-size:20px;color:'+(i<=Math.round(avg)?'#ffd700':'rgba(255,215,0,.2)');sp.innerHTML='&#9733;';sd.appendChild(sp);}
+  var total=DB.msgs.length;
+  document.getElementById('msg-total').textContent=total;
+  var today=new Date().toDateString();
+  document.getElementById('msg-today').textContent=DB.msgs.filter(function(m){return new Date(m.time).toDateString()===today;}).length;
+  if(DB.msgs.length){
+    var sc={};DB.msgs.forEach(function(m){sc[m.service]=(sc[m.service]||0)+1;});
+    var top=Object.keys(sc).sort(function(a,b){return sc[b]-sc[a];})[0];
+    document.getElementById('msg-services').textContent=top?top.split(' ')[0]:'—';
+  }
+}
+
+function hoverStar(n){
+  DB.selectedStar=n;
+  document.querySelectorAll('.star-btn').forEach(function(b,i){
+    b.classList.toggle('lit',i<n);
+  });
+}
+
+function submitRating(){
+  if(!DB.selectedStar){alert('Please select a star rating first.');return;}
+  var comment=document.getElementById('rating-comment').value.trim();
+  DB.ratings.push({v:DB.selectedStar,c:comment,time:Date.now()});
+  save();
+  document.getElementById('pre-submit').style.display='none';
+  document.getElementById('rating-thanks').style.display='block';
+  updateStats();
+  buildRatingChart();
+  buildComments();
+}
+
+var rChart=null;
+function buildRatingChart(){
+  var dist=[0,0,0,0,0];
+  DB.ratings.forEach(function(r){if(r.v>=1&&r.v<=5)dist[r.v-1]++;});
+  if(rChart){rChart.destroy();}
+  var ctx=document.getElementById('ratingChart');
+  if(!ctx)return;
+  rChart=new Chart(ctx,{
+    type:'bar',
+    data:{labels:['1 Star','2 Stars','3 Stars','4 Stars','5 Stars'],
+      datasets:[{label:'Ratings',data:dist,backgroundColor:'rgba(255,215,0,0.25)',borderColor:'#b8860b',borderWidth:1}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{color:'#b8860b',font:{size:10}},grid:{color:'rgba(255,215,0,0.06)'}},
+              y:{ticks:{color:'#b8860b',font:{size:10},stepSize:1},grid:{color:'rgba(255,215,0,0.06)'}}}}
+  });
+}
+
+function buildComments(){
+  var list=document.getElementById('comments-list');
+  var withComments=DB.ratings.filter(function(r){return r.c;});
+  if(!withComments.length){list.innerHTML='<div style="font-family:\'Cormorant Garamond\',serif;font-style:italic;color:var(--gd);font-size:14px;text-align:center;padding:16px;">No comments yet. Be the first to leave feedback.</div>';return;}
+  list.innerHTML=withComments.slice(-5).reverse().map(function(r){
+    var stars='';for(var i=1;i<=5;i++)stars+='<span style="color:'+(i<=r.v?'#ffd700':'rgba(255,215,0,.2)')+'">&#9733;</span>';
+    return '<div class="cert-item"><div style="flex:1"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">'+stars+'<span style="font-size:9px;color:var(--gd);letter-spacing:1px;">'+new Date(r.time).toLocaleDateString()+'</span></div><div style="font-size:12px;color:var(--wd);">'+r.c+'</div></div></div>';
+  }).join('');
+}
+
+function buildInbox(){
+  var list=document.getElementById('inbox-list');
+  if(!DB.msgs.length){list.innerHTML='<div class="empty-inbox">No messages yet. Share your dashboard to receive enquiries.</div>';return;}
+  list.innerHTML=DB.msgs.slice(-10).reverse().map(function(m){
+    return '<div class="inbox-item"><div class="inbox-from">'+m.name+'<span class="inbox-time">'+new Date(m.time).toLocaleDateString()+'</span></div><div class="inbox-sub">'+m.service+'</div><div class="inbox-preview">'+m.email+' &mdash; '+m.msg.substring(0,80)+(m.msg.length>80?'...':'')+'</div></div>';
+  }).join('');
+}
+
+function sendMessage(){
+  var name=document.getElementById('f-name').value.trim();
+  var email=document.getElementById('f-email').value.trim();
+  var service=document.getElementById('f-service').value;
+  var msg=document.getElementById('f-msg').value.trim();
+  if(!name||!email||!msg){alert('Please fill in name, email and message.');return;}
+  DB.msgs.push({name:name,email:email,service:service||'General',msg:msg,time:Date.now()});
+  save();
+  document.getElementById('msg-success').style.display='block';
+  document.getElementById('f-name').value='';
+  document.getElementById('f-email').value='';
+  document.getElementById('f-service').value='';
+  document.getElementById('f-msg').value='';
+  updateStats();
+  var ml='mailto:theegalarinku154@gmail.com?subject=Dashboard%20Enquiry%20from%20'+encodeURIComponent(name)+'&body=From%3A%20'+encodeURIComponent(name)+'%0AEmail%3A%20'+encodeURIComponent(email)+'%0AService%3A%20'+encodeURIComponent(service)+'%0A%0AMessage%3A%0A'+encodeURIComponent(msg);
+  setTimeout(function(){window.location.href=ml;},400);
+}
+
+var radarC=null,barC=null;
+function buildCharts(){
+  var rctx=document.getElementById('radarChart');
+  var bctx=document.getElementById('barChart');
+  if(!rctx||!bctx)return;
+  if(radarC)radarC.destroy();
+  if(barC)barC.destroy();
+  radarC=new Chart(rctx,{
+    type:'radar',
+    data:{labels:['Python','SQL','Power BI','ML','Tableau','Excel','AWS'],
+      datasets:[{label:'Proficiency',data:[88,85,82,78,75,85,65],
+        borderColor:'#ffd700',backgroundColor:'rgba(255,215,0,0.08)',pointBackgroundColor:'#b8860b',borderWidth:1.5,pointRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{r:{ticks:{display:false},grid:{color:'rgba(255,215,0,0.1)'},pointLabels:{color:'#b8860b',font:{size:10,family:'Cinzel'}},suggestedMin:0,suggestedMax:100}}}
+  });
+  barC=new Chart(bctx,{
+    type:'bar',
+    data:{labels:['Python','SQL','Power BI','ML','Tableau','Excel','AWS'],
+      datasets:[{label:'Proficiency %',data:[88,85,82,78,75,85,65],
+        backgroundColor:'rgba(255,215,0,0.2)',borderColor:'#b8860b',borderWidth:1}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+      plugins:{legend:{display:false}},
+      scales:{x:{max:100,ticks:{color:'#b8860b',font:{size:10},callback:function(v){return v+'%';}},grid:{color:'rgba(255,215,0,0.06)'}},
+              y:{ticks:{color:'#b8860b',font:{size:10}},grid:{color:'rgba(255,215,0,0.06)'}}}}
+  });
+}
+
+var cv2=document.getElementById('stardash');
+var cx2=cv2.getContext('2d');
+function resizeStar(){cv2.width=cv2.offsetWidth;cv2.height=cv2.offsetHeight||800;}
+resizeStar();
+var strs=Array.from({length:160},function(){return{x:Math.random()*cv2.width,y:Math.random()*cv2.height,r:Math.random()*.9+.2,a:Math.random(),s:Math.random()*.004+.001,d:Math.random()>.5?1:-1};});
+function drawStars(){
+  cx2.clearRect(0,0,cv2.width,cv2.height);
+  strs.forEach(function(s){s.a+=s.s*s.d;if(s.a>=1||s.a<=0)s.d*=-1;cx2.beginPath();cx2.arc(s.x,s.y,s.r,0,Math.PI*2);cx2.fillStyle='rgba(255,215,0,'+s.a*.5+')';cx2.fill();});
+  requestAnimationFrame(drawStars);
+}
+drawStars();
+
+DB.totalViews=(DB.totalViews||1)+1;
+save();
+updateStats();
+setTimeout(buildCharts,300);
+</script>
